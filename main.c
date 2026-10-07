@@ -3,29 +3,28 @@
 #include "poly.h"
 
 int main() {
-    // printf("%d\n", mod_q(3330));
-    // printf("%d\n", mod_q(-1));
-    // printf("%d\n", mod_q(3329));
-    // printf("%d\n", mod_q(-3330));
-
-    // int32_t a = 2000000; // 2 triệu
-    // int32_t b = 2000000; // 2 triệu
-
-    // int64_t x = a * b; // Kết quả mong muốn: 4 * 10^12 (vượt 32-bit nhưng vừa khít 64-bit)
-    // printf("%ld\n", x);
-    poly a;
-
-    a.c[0] = 123;
-    a.c[100] = 456;
-
-    printf("%d\n", a.c[0]);
-    printf("%d\n", a.c[100]);
+    poly a, b, r;
 
     poly_zero(&a);
+    poly_zero(&b);
 
-    printf("%d\n", a.c[0]);
-    printf("%d\n", a.c[100]);
+    a.c[0] = 3000;
+    a.c[1] = 100;
 
+    b.c[0] = 1000;
+    b.c[1] = 200;
+
+    poly_add(&r, &a, &b);
+
+    printf("%d %d\n", r.c[0], r.c[1]);
+
+    poly_sub(&r, &a, &b);
+
+    printf("%d %d\n", r.c[0], r.c[1]);
+
+    // expected:
+    // 671 300
+    // 2000 3229
 
 
     return 0;
