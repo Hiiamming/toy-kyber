@@ -1,31 +1,34 @@
-#include <stdio.h>
-#include <stdint.h>
 #include "poly.h"
 
-int main() {
-    poly a, b, r;
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
-    poly_zero(&a);
-    poly_zero(&b);
+int main(void)
+{
+for (uint32_t seed = 1; seed <= 100; seed++) {
+    uint8_t msg[32];
+    uint8_t out[32];
 
-    a.c[0] = 3000;
-    a.c[1] = 100;
+    public_key pk;
+    secret_key sk;
+    ciphertext ct;
+    prng rng;
 
-    b.c[0] = 1000;
-    b.c[1] = 200;
+    for (int i = 0; i < 32; i++) {
+        msg[i] = (uint8_t)(i * 37 + seed);
+    }
 
-    poly_add(&r, &a, &b);
+    prng_init(&rng, seed);
+    keygen(&pk, &sk, &rng);
+    encrypt(&ct, &pk, msg, &rng);
+    decrypt(out, &ct, &sk);
 
-    printf("%d %d\n", r.c[0], r.c[1]);
+    if (memcmp(msg, out, 32) != 0) {
+        printf("FAIL at seed %u\n", seed);
+        return 1;
+    }
+}
 
-    poly_sub(&r, &a, &b);
-
-    printf("%d %d\n", r.c[0], r.c[1]);
-
-    // expected:
-    // 671 300
-    // 2000 3229
-
-
-    return 0;
+printf("PASS: 100 seeds\n");
 }
